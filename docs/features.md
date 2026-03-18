@@ -130,16 +130,16 @@
 
 ## Out of Scope (Phase 1)
 
-| Feature | Phase |
-|---|---|
-| Friends / social sharing | 2 |
-| Map layer toggle (all vs friends' visited) | 2 |
-| User profile stats (total visits, avg score given) | 2 |
-| Photos / image upload | 2 |
-| Search by name or cuisine | future |
-| Filters (rating range, cuisine type) | future |
-| Notifications / push | future |
-| Offline mode | future |
+| Feature                                            | Phase  |
+| -------------------------------------------------- | ------ |
+| Friends / social sharing                           | 2      |
+| Map layer toggle (all vs friends' visited)         | 2      |
+| User profile stats (total visits, avg score given) | 2      |
+| Photos / image upload                              | 2      |
+| Search by name or cuisine                          | future |
+| Filters (rating range, cuisine type)               | future |
+| Notifications / push                               | future |
+| Offline mode                                       | future |
 
 ---
 

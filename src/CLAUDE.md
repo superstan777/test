@@ -277,15 +277,15 @@ export type Rating = {
 
 ## Hooks Naming
 
-| File | Purpose |
-|---|---|
-| `use-color-scheme.ts` | OS color scheme (dark/light) |
-| `use-theme.ts` | Themed color tokens |
-| `use-auth.ts` | Supabase auth session |
+| File                     | Purpose                                               |
+| ------------------------ | ----------------------------------------------------- |
+| `use-color-scheme.ts`    | OS color scheme (dark/light)                          |
+| `use-theme.ts`           | Themed color tokens                                   |
+| `use-auth.ts`            | Supabase auth session                                 |
 | `use-map-restaurants.ts` | Overpass fetch + Supabase merge, bbox cache, debounce |
-| `use-visits.ts` | Fetch current user's ratings (Visits tab) |
-| `use-bookmarks.ts` | Fetch / toggle bookmarks (Want to Go tab) |
-| `use-ratings.ts` | Upsert / delete a single rating |
+| `use-visits.ts`          | Fetch current user's ratings (Visits tab)             |
+| `use-bookmarks.ts`       | Fetch / toggle bookmarks (Want to Go tab)             |
+| `use-ratings.ts`         | Upsert / delete a single rating                       |
 
 ---
 

@@ -91,7 +91,9 @@ Zero cost, no API key, full vector tile support, clustering, iOS + Android.
 ## Restaurant Data Strategy
 
 ### Problem
+
 The map library only renders tiles. Restaurant markers need a data source. Options:
+
 - **Google Places / Yelp / TripAdvisor API** — paid or heavily rate-limited. ❌ Not free.
 - **Web crawler** — violates ToS of most services. ❌ Legal risk.
 - **100% user-generated** — empty map on first launch, poor UX. ❌ Cold-start problem.
@@ -117,6 +119,7 @@ User flow:
 ```
 
 ### Overpass API query (bounding box)
+
 ```
 [out:json][timeout:10];
 (
@@ -128,12 +131,14 @@ out body;
 ```
 
 Endpoint: `https://overpass-api.de/api/interpreter`
+
 - No API key
 - No registration
 - Rate limit: reasonable for per-gesture requests (do not poll on every render)
 - Attribution required: `© OpenStreetMap contributors`
 
 ### Rules for Overpass usage
+
 - Fetch only on map region change (debounce 500ms minimum)
 - Do not fetch if zoom level < 13 (too many results)
 - Cache results keyed by bounding box — do not re-fetch same area in same session
