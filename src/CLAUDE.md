@@ -31,10 +31,12 @@ src/
 **Planned routes:**
 | File | Purpose |
 |---|---|
-| `src/app/index.tsx` | Home / list of saved restaurants |
-| `src/app/map.tsx` | Map with all restaurants |
-| `src/app/explore.tsx` | Discover / search restaurants |
-| `src/app/restaurant/[id].tsx` | Restaurant detail + rating form |
+| `src/app/index.tsx` | Tab 1 — Map (default tab, full-screen) |
+| `src/app/visits.tsx` | Tab 2 — Visits (rated restaurants list) |
+| `src/app/want-to-go.tsx` | Tab 3 — Want to Go (bookmarks list) |
+| `src/app/restaurant/[id].tsx` | Restaurant detail (push or modal) |
+| `src/app/restaurant/new.tsx` | Add restaurant form (modal) |
+| `src/app/profile.tsx` | Email + logout (header button) |
 | `src/app/(auth)/login.tsx` | Login screen |
 | `src/app/(auth)/register.tsx` | Register screen |
 
@@ -160,6 +162,7 @@ Supabase Auth is used. Helper hooks to be placed in `src/hooks/use-auth.ts`.
 See `docs/maps-decision.md` for full rationale.
 
 Install:
+
 ```bash
 npm install @maplibre/maplibre-react-native
 ```
@@ -170,19 +173,19 @@ npm install @maplibre/maplibre-react-native
 // src/components/restaurant-map.tsx (and .ios.tsx)
 
 type OsmRestaurant = {
-  osmId: string;      // Overpass node id
+  osmId: string; // Overpass node id
   name: string;
   lat: number;
   lng: number;
 };
 
 type RestaurantMapProps = {
-  osmRestaurants: OsmRestaurant[];           // from Overpass API
-  userRestaurants: Pick<Restaurant, 'id' | 'name' | 'lat' | 'lng'>[]; // from Supabase
+  osmRestaurants: OsmRestaurant[]; // from Overpass API
+  userRestaurants: Pick<Restaurant, "id" | "name" | "lat" | "lng">[]; // from Supabase
   onOsmMarkerPress: (osm: OsmRestaurant) => void;
   onUserMarkerPress: (id: string) => void;
   onMapLongPress?: (lat: number, lng: number) => void; // add new restaurant
-  onRegionChange: (bbox: BoundingBox) => void;         // trigger Overpass fetch
+  onRegionChange: (bbox: BoundingBox) => void; // trigger Overpass fetch
 };
 
 type BoundingBox = { south: number; west: number; north: number; east: number };
@@ -191,8 +194,9 @@ type BoundingBox = { south: number; west: number; north: number; east: number };
 ### Overpass API client
 
 Create `src/lib/overpass.ts`:
+
 ```ts
-const OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
+const OVERPASS_URL = "https://overpass-api.de/api/interpreter";
 
 export type OverpassRestaurant = {
   osmId: string;
@@ -201,9 +205,12 @@ export type OverpassRestaurant = {
   lng: number;
 };
 
-export async function fetchRestaurantsInBbox(
-  bbox: { south: number; west: number; north: number; east: number }
-): Promise<OverpassRestaurant[]> {
+export async function fetchRestaurantsInBbox(bbox: {
+  south: number;
+  west: number;
+  north: number;
+  east: number;
+}): Promise<OverpassRestaurant[]> {
   const query = `
     [out:json][timeout:10];
     (
@@ -213,15 +220,15 @@ export async function fetchRestaurantsInBbox(
     out body;
   `;
   const res = await fetch(OVERPASS_URL, {
-    method: 'POST',
+    method: "POST",
     body: `data=${encodeURIComponent(query)}`,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
   });
   if (!res.ok) throw new Error(`Overpass error: ${res.status}`);
   const json = await res.json();
   return (json.elements as any[]).map((el) => ({
     osmId: String(el.id),
-    name: el.tags?.name ?? 'Unnamed',
+    name: el.tags?.name ?? "Unnamed",
     lat: el.lat,
     lng: el.lon,
   }));
@@ -231,6 +238,7 @@ export async function fetchRestaurantsInBbox(
 ### Hook: `src/hooks/use-map-restaurants.ts`
 
 Responsible for:
+
 - Debouncing `onRegionChange` calls (≥500ms)
 - Skipping fetch when zoom < 13
 - In-memory cache keyed by bounding box string
@@ -269,13 +277,15 @@ export type Rating = {
 
 ## Hooks Naming
 
-| File                  | Purpose                      |
-| --------------------- | ---------------------------- |
+| File | Purpose |
+|---|---|
 | `use-color-scheme.ts` | OS color scheme (dark/light) |
-| `use-theme.ts`        | Themed color tokens          |
-| `use-auth.ts`         | Supabase auth session        |
-| `use-restaurants.ts`  | Fetch / mutate restaurants   |
-| `use-ratings.ts`      | Fetch / mutate ratings       |
+| `use-theme.ts` | Themed color tokens |
+| `use-auth.ts` | Supabase auth session |
+| `use-map-restaurants.ts` | Overpass fetch + Supabase merge, bbox cache, debounce |
+| `use-visits.ts` | Fetch current user's ratings (Visits tab) |
+| `use-bookmarks.ts` | Fetch / toggle bookmarks (Want to Go tab) |
+| `use-ratings.ts` | Upsert / delete a single rating |
 
 ---
 
