@@ -30,6 +30,7 @@
 | Navigation | expo-router (file-based) + `NativeTabs`        | Already in project                                |
 | State      | React Context + `useState` / `useReducer`      | Keep it simple; no Redux                          |
 | Maps       | **⚠️ OPEN DECISION** — see below               |                                                   |
+| iOS UI     | `expo-ui` (SwiftUI) — Liquid Glass             | Native glass effect on iOS, free, no deps         |
 
 ---
 
@@ -92,6 +93,13 @@ Supabase
 
 - Do not request map tiles on every render — cache where possible
 - Do not make more than 1 geocoding/reverse-geocoding request per user action
+
+### Liquid Glass (iOS)
+
+- Use `expo-ui` SwiftUI components for glass effects on iOS — see `docs/liquid-glass.md`
+- Always provide a `.tsx` fallback (NativeWind) alongside every `.ios.tsx` glass component
+- Requires Xcode 16+ and a native build (expo-dev-client) — does not work in Expo Go
+- `expo-ui` is currently in beta — pin version, review release notes on upgrades
 
 ---
 
