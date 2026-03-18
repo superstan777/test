@@ -155,23 +155,86 @@ Supabase Auth is used. Helper hooks to be placed in `src/hooks/use-auth.ts`.
 
 ## Map Integration
 
-⚠️ **Library not decided yet.** See root `CLAUDE.md` → Open Decisions.
+**Library:** `@maplibre/maplibre-react-native` + OpenStreetMap tiles (free, no API key)  
+**Data:** OSM Overpass API (display layer) + Supabase (ratings & user-added restaurants)  
+See `docs/maps-decision.md` for full rationale.
 
-When a library is chosen, add:
+Install:
+```bash
+npm install @maplibre/maplibre-react-native
+```
 
-1. Install instructions here
-2. A `src/components/restaurant-map.tsx` wrapper component
-3. Update this section
-
-**Interface the map component must expose:**
+### Component interface
 
 ```tsx
-type RestaurantMapProps = {
-  restaurants: Pick<Restaurant, "id" | "name" | "lat" | "lng">[];
-  onMarkerPress: (id: string) => void;
-  onMapLongPress?: (lat: number, lng: number) => void; // add new restaurant
+// src/components/restaurant-map.tsx (and .ios.tsx)
+
+type OsmRestaurant = {
+  osmId: string;      // Overpass node id
+  name: string;
+  lat: number;
+  lng: number;
 };
+
+type RestaurantMapProps = {
+  osmRestaurants: OsmRestaurant[];           // from Overpass API
+  userRestaurants: Pick<Restaurant, 'id' | 'name' | 'lat' | 'lng'>[]; // from Supabase
+  onOsmMarkerPress: (osm: OsmRestaurant) => void;
+  onUserMarkerPress: (id: string) => void;
+  onMapLongPress?: (lat: number, lng: number) => void; // add new restaurant
+  onRegionChange: (bbox: BoundingBox) => void;         // trigger Overpass fetch
+};
+
+type BoundingBox = { south: number; west: number; north: number; east: number };
 ```
+
+### Overpass API client
+
+Create `src/lib/overpass.ts`:
+```ts
+const OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
+
+export type OverpassRestaurant = {
+  osmId: string;
+  name: string;
+  lat: number;
+  lng: number;
+};
+
+export async function fetchRestaurantsInBbox(
+  bbox: { south: number; west: number; north: number; east: number }
+): Promise<OverpassRestaurant[]> {
+  const query = `
+    [out:json][timeout:10];
+    (
+      node["amenity"="restaurant"](${bbox.south},${bbox.west},${bbox.north},${bbox.east});
+      node["amenity"="cafe"](${bbox.south},${bbox.west},${bbox.north},${bbox.east});
+    );
+    out body;
+  `;
+  const res = await fetch(OVERPASS_URL, {
+    method: 'POST',
+    body: `data=${encodeURIComponent(query)}`,
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  });
+  if (!res.ok) throw new Error(`Overpass error: ${res.status}`);
+  const json = await res.json();
+  return (json.elements as any[]).map((el) => ({
+    osmId: String(el.id),
+    name: el.tags?.name ?? 'Unnamed',
+    lat: el.lat,
+    lng: el.lon,
+  }));
+}
+```
+
+### Hook: `src/hooks/use-map-restaurants.ts`
+
+Responsible for:
+- Debouncing `onRegionChange` calls (≥500ms)
+- Skipping fetch when zoom < 13
+- In-memory cache keyed by bounding box string
+- Merging Overpass results with Supabase restaurants
 
 ---
 

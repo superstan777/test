@@ -29,27 +29,15 @@
 | Backend    | [Supabase](https://supabase.com)               | Free tier: auth, Postgres, storage, realtime      |
 | Navigation | expo-router (file-based) + `NativeTabs`        | Already in project                                |
 | State      | React Context + `useState` / `useReducer`      | Keep it simple; no Redux                          |
-| Maps       | **⚠️ OPEN DECISION** — see below               |                                                   |
+| Maps       | `@maplibre/maplibre-react-native` + OSM tiles  | Free, no API key, vector tiles, iOS + Android     |
+| Map data   | OSM Overpass API + Supabase (hybrid)           | OSM for display, Supabase for ratings/custom pins |
 | iOS UI     | `expo-ui` (SwiftUI) — Liquid Glass             | Native glass effect on iOS, free, no deps         |
 
 ---
 
 ## Open Decisions
 
-### Maps library
-
-No decision made yet. Evaluate options based on: free tier, no API key required (or generous free quota), React Native support.
-
-**Candidates to evaluate:**
-
-- `react-native-maps` with OpenStreetMap tiles — fully free, no key needed, limited styling
-- `expo-maps` (experimental, Expo SDK 55) — requires Google Maps / Apple Maps (free on iOS; Android SDK key needed)
-- `react-native-maplibre-gl` with free Maptiler/OSM tiles — open source, better styling, more complex setup
-- `@rnmapbox/maps` with Mapbox free tier — 50k MAU free, requires API key
-
-**Constraint:** Must remain free. Do not use Google Maps Billing or any API that charges after a free quota unless it has a hard cap (spending limit = $0).
-
-When a decision is made, update this file and `src/CLAUDE.md`.
+> All major decisions made. No blockers.
 
 ---
 
@@ -91,8 +79,13 @@ Supabase
 
 ### Maps free-tier rules
 
-- Do not request map tiles on every render — cache where possible
-- Do not make more than 1 geocoding/reverse-geocoding request per user action
+- Map renderer: `@maplibre/maplibre-react-native` + OSM raster tiles (free, no key)
+- Restaurant data: OSM Overpass API for display + Supabase for ratings and user-added restaurants
+- Do **not** use Google Maps, Google Places, Yelp, or any API without a hard $0 spending cap
+- Fetch Overpass only on map region change — debounce ≥500ms, skip zoom < 13
+- Cache Overpass results per bounding box for the session — do not re-fetch same area
+- Never store raw Overpass results in Supabase (it would exhaust the 500 MB limit)
+- Attribution `© OpenStreetMap contributors` must be visible on the map at all times
 
 ### Liquid Glass (iOS)
 

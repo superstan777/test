@@ -1,7 +1,8 @@
 # Map Libraries — Decision Guide
 
-> Status: **OPEN — no decision made yet**
-> Update this file and root `CLAUDE.md` when a library is chosen.
+> Status: **✅ DECIDED**
+> Library: `@maplibre/maplibre-react-native` + OpenStreetMap tiles
+> Restaurant data: OSM Overpass API (display) + Supabase (ratings & user contributions)
 
 ---
 
@@ -81,21 +82,72 @@ Attribution required: `© OpenStreetMap contributors`
 
 ---
 
-## Recommendation
+## Decision: Option C — `@maplibre/maplibre-react-native` + OpenStreetMap
 
-**Use Option C (`react-native-maplibre-gl` + OpenStreetMap tiles)** if the priority is zero ongoing cost with no API key.
-
-**Use Option D (`@rnmapbox/maps`)** if you need better styling and can accept a soft 50k MAU limit.
+Zero cost, no API key, full vector tile support, clustering, iOS + Android.
 
 ---
 
-## Implementation Checklist (once decided)
+## Restaurant Data Strategy
 
-- [ ] Install the chosen library
-- [ ] Add required `app.json` plugin entry
-- [ ] Create `src/components/restaurant-map.tsx` with the `RestaurantMapProps` interface (see `src/CLAUDE.md`)
-- [ ] Add OSM attribution text to the map screen UI (legally required)
+### Problem
+The map library only renders tiles. Restaurant markers need a data source. Options:
+- **Google Places / Yelp / TripAdvisor API** — paid or heavily rate-limited. ❌ Not free.
+- **Web crawler** — violates ToS of most services. ❌ Legal risk.
+- **100% user-generated** — empty map on first launch, poor UX. ❌ Cold-start problem.
+- **OpenStreetMap Overpass API** — millions of restaurants worldwide, free, no key. ✅
+
+### Chosen approach: Overpass API + Supabase hybrid
+
+```
+Map screen
+├── Layer 1 — OSM Overpass API (read-only, no key required)
+│    ├── Fetched by current map bounding box
+│    ├── Cached in memory for the session (no Supabase write)
+│    └── Displayed as grey markers
+│
+└── Layer 2 — Supabase `restaurants` table (user-generated)
+     ├── Restaurants added by app users (not in OSM)
+     ├── Displayed as branded markers (different color)
+     └── All ratings and notes are always stored here
+
+User flow:
+  OSM restaurant tapped → user can "claim" it → creates Supabase record → can rate it
+  Long-press on empty map → add new restaurant → stored in Supabase
+```
+
+### Overpass API query (bounding box)
+```
+[out:json][timeout:10];
+(
+  node["amenity"="restaurant"]({{bbox}});
+  node["amenity"="cafe"]({{bbox}});
+  node["amenity"="bar"]({{bbox}});
+);
+out body;
+```
+
+Endpoint: `https://overpass-api.de/api/interpreter`
+- No API key
+- No registration
+- Rate limit: reasonable for per-gesture requests (do not poll on every render)
+- Attribution required: `© OpenStreetMap contributors`
+
+### Rules for Overpass usage
+- Fetch only on map region change (debounce 500ms minimum)
+- Do not fetch if zoom level < 13 (too many results)
+- Cache results keyed by bounding box — do not re-fetch same area in same session
+- Max 200 results per query (add `[out:json][timeout:10][maxsize:1000000]`)
+
+---
+
+## Implementation Checklist
+
+- [ ] `npm install @maplibre/maplibre-react-native`
+- [ ] Add plugin to `app.json` if required
+- [ ] Create `src/lib/overpass.ts` — typed Overpass API client
+- [ ] Create `src/components/restaurant-map.tsx` (Android/Web fallback)
+- [ ] Create `src/components/restaurant-map.ios.tsx` (MapLibre, glass FAB)
+- [ ] Add OSM attribution `© OpenStreetMap contributors` to map UI (legally required)
+- [ ] Implement bounding-box debounce + cache in `src/hooks/use-map-restaurants.ts`
 - [ ] Test on iOS simulator and Android emulator
-- [ ] Update `CLAUDE.md` → Open Decisions section
-- [ ] Update `src/CLAUDE.md` → Map Integration section
-- [ ] Delete/archive this file or mark it as resolved
