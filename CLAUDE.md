@@ -4,6 +4,18 @@
 
 ---
 
+## Session Start — Read This First
+
+Before writing any code, read **`docs/progress.md`**. It tells you:
+
+- Which chunk is currently active and what tasks remain
+- What has already been built (don't rebuild it)
+- Known issues and deferred decisions
+
+After completing work, update `docs/progress.md`: tick off finished tasks, note decisions made, and set the next chunk as active if the current one is done.
+
+---
+
 ## Project Overview
 
 **Restaumat** — a mobile app for discovering, bookmarking, and rating restaurants.

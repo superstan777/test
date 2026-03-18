@@ -3,19 +3,25 @@ import { SafeAreaView, Text, View } from 'react-native';
 
 export default function WantToGoScreen() {
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-black">
-      <View className="px-4 pt-4 pb-2">
-        <Text className="text-2xl font-bold text-gray-900 dark:text-white">
+    <SafeAreaView className="flex-1 bg-neutral-50 dark:bg-neutral-950">
+      <View className="px-5 pt-2 pb-3 border-b border-neutral-200 dark:border-neutral-800">
+        <Text className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-white">
           Want to Go
         </Text>
-      </View>
-      <View className="flex-1 items-center justify-center px-8">
-        <Text className="text-5xl mb-4">🔖</Text>
-        <Text className="text-base font-medium text-gray-500 dark:text-gray-400 text-center">
-          Nothing saved yet.
+        <Text className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
+          Saved for later
         </Text>
-        <Text className="text-sm text-gray-400 dark:text-gray-500 text-center mt-2">
-          Long-press any restaurant on the map to save it.
+      </View>
+
+      <View className="flex-1 items-center justify-center px-10 pb-28">
+        <View className="w-20 h-20 rounded-3xl bg-neutral-100 dark:bg-neutral-800 items-center justify-center mb-5">
+          <Text className="text-4xl">🔖</Text>
+        </View>
+        <Text className="text-lg font-semibold text-neutral-700 dark:text-neutral-300 text-center mb-2">
+          Nothing saved yet
+        </Text>
+        <Text className="text-sm text-neutral-400 dark:text-neutral-500 text-center leading-5">
+          Long-press any restaurant on the map to save it here.
         </Text>
       </View>
     </SafeAreaView>
