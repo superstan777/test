@@ -55,6 +55,7 @@ NativeWind lets you use Tailwind `className` directly on React Native components
 ```
 
 **Exceptions where `style` is acceptable:**
+
 - Dynamically calculated numeric values (e.g. map height from `useWindowDimensions`)
 - Animated values from `react-native-reanimated`
 
@@ -67,6 +68,7 @@ NativeWind lets you use Tailwind `className` directly on React Native components
 ## Component Conventions
 
 ### File structure
+
 ```
 src/components/
 ├── restaurant-card.tsx       ← domain component
@@ -78,9 +80,10 @@ src/components/
 ```
 
 ### Component template
+
 ```tsx
-import React from 'react';
-import { View, Text } from 'react-native';
+import React from "react";
+import { View, Text } from "react-native";
 
 type Props = {
   title: string;
@@ -108,10 +111,11 @@ export function MyComponent({ title, onPress }: Props) {
 Use the singleton from `src/lib/supabase.ts`:
 
 ```ts
-import { supabase } from '@/lib/supabase';
+import { supabase } from "@/lib/supabase";
 ```
 
 ### Pattern for screen-level data fetching
+
 ```tsx
 const [restaurants, setRestaurants] = React.useState<Restaurant[]>([]);
 const [loading, setLoading] = React.useState(true);
@@ -119,8 +123,8 @@ const [error, setError] = React.useState<string | null>(null);
 
 React.useEffect(() => {
   supabase
-    .from('restaurants')
-    .select('*')
+    .from("restaurants")
+    .select("*")
     .then(({ data, error }) => {
       if (error) setError(error.message);
       else setRestaurants(data ?? []);
@@ -154,14 +158,16 @@ Supabase Auth is used. Helper hooks to be placed in `src/hooks/use-auth.ts`.
 ⚠️ **Library not decided yet.** See root `CLAUDE.md` → Open Decisions.
 
 When a library is chosen, add:
+
 1. Install instructions here
 2. A `src/components/restaurant-map.tsx` wrapper component
 3. Update this section
 
 **Interface the map component must expose:**
+
 ```tsx
 type RestaurantMapProps = {
-  restaurants: Pick<Restaurant, 'id' | 'name' | 'lat' | 'lng'>[];
+  restaurants: Pick<Restaurant, "id" | "name" | "lat" | "lng">[];
   onMarkerPress: (id: string) => void;
   onMapLongPress?: (lat: number, lng: number) => void; // add new restaurant
 };
@@ -181,8 +187,8 @@ export type Restaurant = {
   address: string | null;
   lat: number;
   lng: number;
-  created_by: string;   // user_id (UUID)
-  created_at: string;   // ISO timestamp
+  created_by: string; // user_id (UUID)
+  created_at: string; // ISO timestamp
 };
 
 // src/types/rating.ts
@@ -200,13 +206,13 @@ export type Rating = {
 
 ## Hooks Naming
 
-| File | Purpose |
-|---|---|
+| File                  | Purpose                      |
+| --------------------- | ---------------------------- |
 | `use-color-scheme.ts` | OS color scheme (dark/light) |
-| `use-theme.ts` | Themed color tokens |
-| `use-auth.ts` | Supabase auth session |
-| `use-restaurants.ts` | Fetch / mutate restaurants |
-| `use-ratings.ts` | Fetch / mutate ratings |
+| `use-theme.ts`        | Themed color tokens          |
+| `use-auth.ts`         | Supabase auth session        |
+| `use-restaurants.ts`  | Fetch / mutate restaurants   |
+| `use-ratings.ts`      | Fetch / mutate ratings       |
 
 ---
 

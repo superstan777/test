@@ -8,6 +8,7 @@
 ## Tables
 
 ### `restaurants`
+
 Stores all restaurants added by users.
 
 ```sql
@@ -48,6 +49,7 @@ create policy "restaurants: delete own"
 ---
 
 ### `ratings`
+
 User ratings and notes for restaurants. One rating per user per restaurant.
 
 ```sql
@@ -87,6 +89,7 @@ create policy "ratings: delete own"
 ---
 
 ### `bookmarks`
+
 Users can bookmark restaurants they want to visit.
 
 ```sql

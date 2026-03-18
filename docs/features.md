@@ -7,6 +7,7 @@
 ## MVP Features (Phase 1)
 
 ### F1 — Auth
+
 - User can register with email + password
 - User can log in / log out
 - Protected screens redirect to login if not authenticated
@@ -17,6 +18,7 @@
 ---
 
 ### F2 — Restaurant List (Home)
+
 - Display a scrollable list of all restaurants
 - Each card shows: name, address, average score, number of ratings
 - Tap card → navigate to restaurant detail
@@ -28,6 +30,7 @@
 ---
 
 ### F3 — Map View
+
 - Full-screen map with markers for all restaurants
 - Marker tap → show restaurant name + score in a bottom sheet / callout
 - Tap callout → navigate to restaurant detail
@@ -40,6 +43,7 @@
 ---
 
 ### F4 — Restaurant Detail
+
 - Shows: name, address, map pin (small static map or inline map)
 - Shows average score (star display) and all user ratings with notes
 - If logged in: show a rate/edit button → opens rating form
@@ -52,6 +56,7 @@
 ---
 
 ### F5 — Add / Edit Restaurant
+
 - Form: Name (required), Address (optional), coordinates (auto-filled from map long-press or user location)
 - On submit: insert into `restaurants` table, navigate to detail screen
 
@@ -60,6 +65,7 @@
 ---
 
 ### F6 — My Bookmarks (Explore tab)
+
 - List of restaurants the current user has bookmarked
 - Remove bookmark from list
 - Auth required to view; shows empty state if not logged in
@@ -71,6 +77,7 @@
 ## Out of Scope (Phase 1)
 
 These features are explicitly NOT in the initial version:
+
 - Social features (follow, share, comments)
 - Photos / image upload
 - Search by name or category

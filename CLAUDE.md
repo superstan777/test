@@ -9,6 +9,7 @@
 **Restaumat** — a mobile app for discovering, bookmarking, and rating restaurants.
 
 **Goals:**
+
 - Users can browse restaurants on an interactive map
 - Users can add personal notes and ratings to restaurants
 - Simple, focused UX — no feature bloat
@@ -20,24 +21,26 @@
 
 ## Tech Stack (Decided)
 
-| Layer | Technology | Reason |
-|---|---|---|
-| Framework | [Expo](https://expo.dev) ~55 + expo-router ~55 | File-based routing, managed workflow, OTA updates |
-| Language | TypeScript (strict) | Type safety |
-| Styling | [NativeWind](https://www.nativewind.dev) v4 | Tailwind CSS utilities on React Native |
-| Backend | [Supabase](https://supabase.com) | Free tier: auth, Postgres, storage, realtime |
-| Navigation | expo-router (file-based) + `NativeTabs` | Already in project |
-| State | React Context + `useState` / `useReducer` | Keep it simple; no Redux |
-| Maps | **⚠️ OPEN DECISION** — see below | |
+| Layer      | Technology                                     | Reason                                            |
+| ---------- | ---------------------------------------------- | ------------------------------------------------- |
+| Framework  | [Expo](https://expo.dev) ~55 + expo-router ~55 | File-based routing, managed workflow, OTA updates |
+| Language   | TypeScript (strict)                            | Type safety                                       |
+| Styling    | [NativeWind](https://www.nativewind.dev) v4    | Tailwind CSS utilities on React Native            |
+| Backend    | [Supabase](https://supabase.com)               | Free tier: auth, Postgres, storage, realtime      |
+| Navigation | expo-router (file-based) + `NativeTabs`        | Already in project                                |
+| State      | React Context + `useState` / `useReducer`      | Keep it simple; no Redux                          |
+| Maps       | **⚠️ OPEN DECISION** — see below               |                                                   |
 
 ---
 
 ## Open Decisions
 
 ### Maps library
+
 No decision made yet. Evaluate options based on: free tier, no API key required (or generous free quota), React Native support.
 
 **Candidates to evaluate:**
+
 - `react-native-maps` with OpenStreetMap tiles — fully free, no key needed, limited styling
 - `expo-maps` (experimental, Expo SDK 55) — requires Google Maps / Apple Maps (free on iOS; Android SDK key needed)
 - `react-native-maplibre-gl` with free Maptiler/OSM tiles — open source, better styling, more complex setup
@@ -58,7 +61,7 @@ User ──► Expo App (React Native)
               ├── NativeWind styled components (src/components/)
               ├── Supabase client (src/lib/supabase.ts)
               └── Map screen (src/app/map.tsx)  ← to be created
-              
+
 Supabase
   ├── Auth (email/password, anonymous optional)
   ├── Database (Postgres)
@@ -73,17 +76,20 @@ Supabase
 ## Free-Tier Constraints
 
 ### Supabase free tier limits
+
 - 500 MB database storage
-- 1 GB file storage  
+- 1 GB file storage
 - 50,000 monthly active users
 - 2 projects max
 
 **Rules:**
+
 - Never store large blobs (images, binary) directly in Postgres — use Supabase Storage
 - Enable RLS on every table before inserting any data
 - Do not enable Supabase Realtime unless the feature explicitly needs it (it costs resources)
 
 ### Maps free-tier rules
+
 - Do not request map tiles on every render — cache where possible
 - Do not make more than 1 geocoding/reverse-geocoding request per user action
 
@@ -138,6 +144,7 @@ npm run lint
 Store secrets in `.env.local` (never commit). Use `expo-constants` or `EXPO_PUBLIC_` prefix for client-side variables.
 
 Required variables:
+
 ```
 EXPO_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
 EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJ...
