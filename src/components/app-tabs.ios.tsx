@@ -1,13 +1,13 @@
-import { GlassContainer, GlassView } from 'expo-glass-effect';
-import { Tabs, TabList, TabTrigger, TabSlot } from 'expo-router/ui';
-import type { TabListProps, TabTriggerSlotProps } from 'expo-router/ui';
-import { SymbolView } from 'expo-symbols';
-import type { SymbolViewProps } from 'expo-symbols';
-import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { GlassContainer, GlassView } from "expo-glass-effect";
+import type { TabListProps, TabTriggerSlotProps } from "expo-router/ui";
+import { TabList, Tabs, TabSlot, TabTrigger } from "expo-router/ui";
+import type { SymbolViewProps } from "expo-symbols";
+import { SymbolView } from "expo-symbols";
+import React from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type SymbolName = SymbolViewProps['name'];
+type SymbolName = SymbolViewProps["name"];
 
 type TabButtonProps = TabTriggerSlotProps & {
   label: string;
@@ -21,7 +21,7 @@ function TabButton({ label, symbol, isFocused, ...props }: TabButtonProps) {
         name={symbol}
         style={styles.symbol}
         type="hierarchical"
-        tintColor={isFocused ? '#007AFF' : '#8E8E93'}
+        tintColor={isFocused ? "#007AFF" : "#8E8E93"}
       />
       <Text style={[styles.tabLabel, isFocused && styles.tabLabelFocused]}>
         {label}
@@ -55,13 +55,13 @@ export default function AppTabs() {
         <TabList asChild>
           <GlassTabList bottomInset={bottomInset}>
             <TabTrigger name="index" href="/" asChild>
-              <TabButton label="Map" symbol={'map' as SymbolName} />
+              <TabButton label="Map" symbol={"map" as SymbolName} />
             </TabTrigger>
             <TabTrigger name="visits" href="/visits" asChild>
-              <TabButton label="Visits" symbol={'fork.knife' as SymbolName} />
+              <TabButton label="Visits" symbol={"fork.knife" as SymbolName} />
             </TabTrigger>
             <TabTrigger name="want-to-go" href="/want-to-go" asChild>
-              <TabButton label="Want to Go" symbol={'bookmark' as SymbolName} />
+              <TabButton label="Want to Go" symbol={"bookmark" as SymbolName} />
             </TabTrigger>
           </GlassTabList>
         </TabList>
@@ -75,22 +75,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tabBarWrapper: {
-    position: 'absolute',
+    position: "absolute",
     left: 20,
     right: 20,
-    alignItems: 'stretch',
+    alignItems: "stretch",
   },
   tabBar: {
-    flexDirection: 'row',
+    flexDirection: "row",
     borderRadius: 30,
     paddingVertical: 10,
     paddingHorizontal: 4,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   tabButton: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 6,
     paddingHorizontal: 4,
     gap: 3,
@@ -101,11 +101,11 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     fontSize: 10,
-    color: '#8E8E93',
-    fontWeight: '500',
+    color: "#8E8E93",
+    fontWeight: "500",
   },
   tabLabelFocused: {
-    color: '#007AFF',
-    fontWeight: '600',
+    color: "#007AFF",
+    fontWeight: "600",
   },
 });
